@@ -33,14 +33,6 @@ class LatexWriter:
     def _write_documentclass(self, fd):
         fd.write(self._line('documentclass'))
 
-    def _write_packages(self, fd):
-        for package in self._packages:
-            fd.write(self._line('package', package))
-
-    def _write_composite_packages(self, fd):
-        for (generic, package) in self._composite_packages:
-            fd.write(self._line('composite_package', generic, package))
-
     def _write_begin_document(self, fd):
         fd.write(self._line('begin_document'))
         self._increase_indent()
@@ -66,6 +58,14 @@ class LatexWriter:
             self._write_item(item, fd)
         self._decrease_indent()
         self._write_end_enum(fd)
+
+    def _write_packages(self, fd):
+        for package in self._packages:
+            fd.write(self._line('package', package))
+
+    def _write_composite_packages(self, fd):
+        for (generic, package) in self._composite_packages:
+            fd.write(self._line('composite_package', generic, package))
 
     def write_iterable_to_latex_file(self, iterable):
         with open(self._outfile, "w") as fd:
