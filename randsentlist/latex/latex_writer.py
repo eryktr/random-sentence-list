@@ -84,7 +84,3 @@ class LatexWriter:
     def add_composite_packages(self, packages):
         for (generic, package) in packages:
             self._composite_packages.append((generic, package))
-
-
-lw = LatexWriter("texfile.tex")
-lw.write_iterable_to_latex_file(['x', 'd'])
