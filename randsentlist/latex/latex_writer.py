@@ -1,16 +1,19 @@
+from randsentlist.latex.tag import Tag
+
+
 class LatexWriter:
     def __init__(self, outfile):
         self._current_indent = 0
         self._outfile = outfile
         self._lines = {
-            'documentclass': 'documentclass{{article}}',
-            'package': 'usepackage{{{}}}',
-            'composite_package': 'usepackage[{}]{{{}}}',
-            'begin_document': 'begin{{document}}',
-            'end_document': 'end{{document}}',
-            'begin_enum': 'begin{{enumerate}}',
-            'end_enum': 'end{{enumerate}}',
-            'item': 'item{{{}}}',
+            Tag.DOCUMENTCLASS: 'documentclass{{article}}',
+            Tag.PACKAGE: 'usepackage{{{}}}',
+            Tag.COMPOSITE_PACKAGE: 'usepackage[{}]{{{}}}',
+            Tag.BEGIN_DOCUMENT: 'begin{{document}}',
+            Tag.END_DOCUMENT: 'end{{document}}',
+            Tag.BEGIN_ENUM: 'begin{{enumerate}}',
+            Tag.END_ENUM: 'end{{enumerate}}',
+            Tag.ITEM: 'item{{{}}}',
         }
         self._packages = set()
         self._composite_packages = set()
@@ -32,26 +35,26 @@ class LatexWriter:
         self._current_indent -= 1
 
     def _write_documentclass(self):
-        self._fd.write(self._line('documentclass'))
+        self._fd.write(self._line(Tag.DOCUMENTCLASS))
 
     def _write_begin_document(self):
-        self._fd.write(self._line('begin_document'))
+        self._fd.write(self._line(Tag.BEGIN_DOCUMENT))
         self._increase_indent()
 
     def _write_end_document(self):
         self._decrease_indent()
-        self._fd.write(self._line('end_document'))
+        self._fd.write(self._line(Tag.END_DOCUMENT))
 
     def _write_begin_enum(self):
-        self._fd.write(self._line('begin_enum'))
+        self._fd.write(self._line(Tag.BEGIN_ENUM))
         self._increase_indent()
 
     def _write_end_enum(self):
         self._decrease_indent()
-        self._fd.write(self._line('end_enum'))
+        self._fd.write(self._line(Tag.END_ENUM))
 
     def _write_item(self, item):
-        self._fd.write(self._line('item', item))
+        self._fd.write(self._line(Tag.ITEM, item))
 
     def _write_iterable(self, iterable):
         self._write_begin_enum()
@@ -64,14 +67,14 @@ class LatexWriter:
             self._write_package(package)
 
     def _write_package(self, package):
-        self._fd.write(self._line('package', package))
+        self._fd.write(self._line(Tag.PACKAGE, package))
 
     def _write_composite_packages(self):
         for (generic, package) in self._composite_packages:
             self._write_composite_package(generic, package)
 
     def _write_composite_package(self, generic, package):
-        self._fd.write(self._line('composite_package', generic, package))
+        self._fd.write(self._line(Tag.COMPOSITE_PACKAGE, generic, package))
 
     def write_iterable_to_latex_file(self, iterable):
         with open(self._outfile, "w") as self._fd:
