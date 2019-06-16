@@ -4,13 +4,13 @@ class LatexWriter:
         self._outfile = outfile
         self._lines = {
             'documentclass': 'documentclass{{article}}',
-            'package': 'usepackage{{ {} }}',
-            'composite_package': 'usepackage[{}]{{ {} }}',
+            'package': 'usepackage{{{}}}',
+            'composite_package': 'usepackage[{}]{{{}}}',
             'begin_document': 'begin{{document}}',
             'end_document': 'end{{document}}',
-            'begin_enum': 'begin{{enumerable}}',
-            'end_enum': 'end{{enumerable}}',
-            'item': 'item{{ {} }}',
+            'begin_enum': 'begin{{enumerate}}',
+            'end_enum': 'end{{enumerate}}',
+            'item': 'item{{{}}}',
         }
         self._packages = set()
         self._composite_packages = set()
@@ -39,16 +39,16 @@ class LatexWriter:
         self._increase_indent()
 
     def _write_end_document(self):
-        self._fd.write(self._line('end_document'))
         self._decrease_indent()
+        self._fd.write(self._line('end_document'))
 
     def _write_begin_enum(self):
         self._fd.write(self._line('begin_enum'))
         self._increase_indent()
 
     def _write_end_enum(self):
-        self._fd.write(self._line('end_enum'))
         self._decrease_indent()
+        self._fd.write(self._line('end_enum'))
 
     def _write_item(self, item):
         self._fd.write(self._line('item', item))
@@ -57,16 +57,21 @@ class LatexWriter:
         self._write_begin_enum()
         for item in iterable:
             self._write_item(item)
-        self._decrease_indent()
         self._write_end_enum()
 
     def _write_packages(self):
         for package in self._packages:
-            self._fd.write(self._line('package', package))
+            self._write_package(package)
+
+    def _write_package(self, package):
+        self._fd.write(self._line('package', package))
 
     def _write_composite_packages(self):
         for (generic, package) in self._composite_packages:
-            self._fd.write(self._line('composite_package', generic, package))
+            self._write_composite_package(generic, package)
+
+    def _write_composite_package(self, generic, package):
+        self._fd.write(self._line('composite_package', generic, package))
 
     def write_iterable_to_latex_file(self, iterable):
         with open(self._outfile, "w") as self._fd:
