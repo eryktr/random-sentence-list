@@ -1,6 +1,5 @@
 import re
 
-
 class SentenceProcessor:
     def __init__(self):
         self._minimum_length = 30
