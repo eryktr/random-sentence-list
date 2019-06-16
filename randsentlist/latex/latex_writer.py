@@ -12,8 +12,8 @@ class LatexWriter:
             'end_enum': 'end{{enumerable}}',
             'item': 'item{{ {} }}',
         }
-        self._packages = []
-        self._composite_packages = []
+        self._packages = set()
+        self._composite_packages = set()
         self._fd = None
 
     @property
@@ -79,8 +79,8 @@ class LatexWriter:
 
     def add_packages(self, packages):
         for package in packages:
-            self._packages.append(package)
+            self._packages.add(package)
 
     def add_composite_packages(self, packages):
         for (generic, package) in packages:
-            self._composite_packages.append((generic, package))
+            self._composite_packages.add((generic, package))
