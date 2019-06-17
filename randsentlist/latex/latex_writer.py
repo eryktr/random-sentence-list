@@ -2,9 +2,8 @@ from randsentlist.latex.tag import Tag
 
 
 class LatexWriter:
-    def __init__(self, outfile):
+    def __init__(self):
         self._current_indent = 0
-        self._outfile = outfile
         self._lines = {
             Tag.DOCUMENTCLASS: 'documentclass{{article}}',
             Tag.PACKAGE: 'usepackage{{{}}}',
@@ -76,8 +75,8 @@ class LatexWriter:
     def _write_composite_package(self, generic, package):
         self._fd.write(self._line(Tag.COMPOSITE_PACKAGE, generic, package))
 
-    def write_iterable_to_latex_file(self, iterable):
-        with open(self._outfile, "w") as self._fd:
+    def write_iterable_to_latex_file(self, iterable, filename):
+        with open(filename, "w") as self._fd:
             self._write_documentclass()
             self._write_packages()
             self._write_composite_packages()

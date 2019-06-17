@@ -5,7 +5,7 @@ from randsentlist.latex.latex_writer import LatexWriter
 
 class TestLatexWriter:
     def setup_method(self):
-        self.latex_writer = LatexWriter("tmp.tex")
+        self.latex_writer = LatexWriter()
         self.latex_writer._fd = MagicMock()
 
     def test_write_documentclass(self):

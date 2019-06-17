@@ -6,6 +6,6 @@ from randsentlist.sentence.processor import SentenceProcessor
 class ListGenerator:
     def __init__(self, num_sentences):
         self._num_sentences = num_sentences
-        self._writer = LatexWriter("tmp")
+        self._writer = LatexWriter()
         self._fetcher = PageFetcher()
         self._processor = SentenceProcessor()
