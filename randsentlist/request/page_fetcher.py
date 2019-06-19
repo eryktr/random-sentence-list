@@ -1,10 +1,19 @@
+import random
+
 import wikipedia
 
 
 class PageFetcher:
 
     def random_wiki_page(self):
-        return wikipedia.page(wikipedia.random(1)[1])
+        title = ""
+        while len(title) < 10:
+            title = wikipedia.random(1)
+        try:
+            return wikipedia.page(title)
+        except wikipedia.DisambiguationError as e:
+            s = random.choice(e.options)
+            return wikipedia.page(s)
 
     def random_wiki_pages(self, num_pages):
         cache = []
@@ -14,6 +23,7 @@ class PageFetcher:
             if page not in cache:
                 cache.append(page)
                 found += 1
+                print(found)
         return cache
 
     def set_language(self, language):
