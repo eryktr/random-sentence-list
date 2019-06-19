@@ -24,7 +24,6 @@ class PageFetcher:
             if page not in cache:
                 cache.append(page)
                 found += 1
-                print(found)
         return cache
 
     def set_language(self, language):
