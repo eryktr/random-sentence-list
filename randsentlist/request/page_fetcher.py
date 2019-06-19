@@ -10,10 +10,11 @@ class PageFetcher:
         while len(title) < 10:
             title = wikipedia.random(1)
         try:
-            return wikipedia.page(title)
+            page = wikipedia.page(title)
         except wikipedia.DisambiguationError as e:
             s = random.choice(e.options)
-            return wikipedia.page(s)
+            page = wikipedia.page(s)
+        return page
 
     def random_wiki_pages(self, num_pages):
         cache = []
