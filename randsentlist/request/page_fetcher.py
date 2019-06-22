@@ -1,9 +1,11 @@
 import random
+import threading
 
 import wikipedia
 
 
 class PageFetcher:
+    LOCK = threading.Lock()
 
     def random_wiki_page(self):
         title = ""
@@ -16,14 +18,24 @@ class PageFetcher:
             page = wikipedia.page(s)
         return page
 
-    def random_wiki_pages(self, num_pages):
-        cache = []
-        found = 0
-        while found < num_pages:
+    def _fetch_page(self, cache):
+        while True:
             page = self.random_wiki_page()
+            PageFetcher.LOCK.acquire()
             if page not in cache:
                 cache.append(page)
-                found += 1
+                PageFetcher.LOCK.release()
+                break
+            PageFetcher.LOCK.release()
+
+    def random_wiki_pages(self, num_pages):
+
+        cache = []
+        threads = [threading.Thread(target=self._fetch_page, args=(cache,)) for _ in range(num_pages)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
         return cache
 
     def set_language(self, language):
