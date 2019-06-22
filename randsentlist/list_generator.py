@@ -24,5 +24,7 @@ class ListGenerator:
                 sentences = [self._processor.to_sentences(page.content) for page in pages]
                 picked = [sentence[random.randint(0, len(sentence) - 1)] for sentence in sentences if sentence]
                 for sentence in picked:
+                    if len(out_sentences) >= sentences_per_file:
+                        break
                     out_sentences.add(sentence)
             self._writer.write_iterable_to_latex_file(out_sentences, name)
