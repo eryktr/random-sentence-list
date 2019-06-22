@@ -13,7 +13,9 @@ class PageFetcher:
         try:
             page = wikipedia.page(title)
         except wikipedia.DisambiguationError as e:
-            options = [option for option in e.options if "(Disambiguation)" not in option and e.title != option]
+            options = [option for option in e.options if "(Disambiguation)" not in option
+                       and "(disambiguation)" not in option
+                       and e.title != option]
             s = random.choice(options)
             page = wikipedia.page(s)
         except wikipedia.PageError:
