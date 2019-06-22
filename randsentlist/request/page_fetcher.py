@@ -14,7 +14,8 @@ class PageFetcher:
         try:
             page = wikipedia.page(title)
         except wikipedia.DisambiguationError as e:
-            s = random.choice(e.options)
+            options = [option for option in e.options if "(Disambiguation)" not in option]
+            s = random.choice(options)
             page = wikipedia.page(s)
         except wikipedia.PageError:
             page = wikipedia.page(wikipedia.random(1))
@@ -24,6 +25,7 @@ class PageFetcher:
         while True:
             page = self.random_wiki_page()
             PageFetcher.LOCK.acquire()
+            print(len(cache))
             if page not in cache:
                 cache.append(page)
                 PageFetcher.LOCK.release()
