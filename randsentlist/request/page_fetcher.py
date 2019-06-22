@@ -1,4 +1,3 @@
-import random
 from multiprocessing.dummy import Pool as ThreadPool
 
 import wikipedia
@@ -12,14 +11,10 @@ class PageFetcher:
             title = wikipedia.random(1)
         try:
             page = wikipedia.page(title)
-        except wikipedia.DisambiguationError as e:
-            options = [option for option in e.options if "(Disambiguation)" not in option
-                       and "(disambiguation)" not in option
-                       and e.title != option]
-            s = random.choice(options)
-            page = wikipedia.page(s)
+        except wikipedia.DisambiguationError:
+            page = self.random_wiki_page()
         except wikipedia.PageError:
-            page = wikipedia.page(wikipedia.random(1))
+            page = self.random_wiki_page()
         return page
 
     def _random_wiki_page(self, task_id):
