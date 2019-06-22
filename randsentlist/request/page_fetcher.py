@@ -14,7 +14,7 @@ class PageFetcher:
         try:
             page = wikipedia.page(title)
         except wikipedia.DisambiguationError as e:
-            options = [option for option in e.options if "(Disambiguation)" not in option]
+            options = [option for option in e.options if "(Disambiguation)" not in option and e.title != option]
             s = random.choice(options)
             page = wikipedia.page(s)
         except wikipedia.PageError:
@@ -37,6 +37,7 @@ class PageFetcher:
         cache = []
         threads = [threading.Thread(target=self._fetch_page, args=(cache,)) for _ in range(num_pages)]
         for t in threads:
+            t.daemon = True
             t.start()
         for t in threads:
             t.join()
