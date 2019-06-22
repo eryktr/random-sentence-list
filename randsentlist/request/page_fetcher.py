@@ -1,11 +1,10 @@
 import random
-import threading
+from multiprocessing.dummy import Pool as ThreadPool
 
 import wikipedia
 
 
 class PageFetcher:
-    LOCK = threading.Lock()
 
     def random_wiki_page(self):
         title = ""
@@ -21,26 +20,13 @@ class PageFetcher:
             page = wikipedia.page(wikipedia.random(1))
         return page
 
-    def _fetch_page(self, cache):
-        while True:
-            page = self.random_wiki_page()
-            PageFetcher.LOCK.acquire()
-            print(len(cache))
-            if page not in cache:
-                cache.append(page)
-                PageFetcher.LOCK.release()
-                break
-            PageFetcher.LOCK.release()
+    def _random_wiki_page(self, task_id):
+        return self.random_wiki_page()
 
     def random_wiki_pages(self, num_pages):
-        cache = []
-        threads = [threading.Thread(target=self._fetch_page, args=(cache,)) for _ in range(num_pages)]
-        for t in threads:
-            t.daemon = True
-            t.start()
-        for t in threads:
-            t.join()
-        return cache
+        pool = ThreadPool(20)
+        results = pool.map(self._random_wiki_page, [i for i in range(num_pages)])
+        return results
 
     def set_language(self, language):
         if language not in wikipedia.languages():
