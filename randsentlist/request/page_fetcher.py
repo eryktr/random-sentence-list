@@ -33,7 +33,6 @@ class PageFetcher:
             PageFetcher.LOCK.release()
 
     def random_wiki_pages(self, num_pages):
-
         cache = []
         threads = [threading.Thread(target=self._fetch_page, args=(cache,)) for _ in range(num_pages)]
         for t in threads:

@@ -16,6 +16,10 @@ class ListGenerator:
         self._fetcher.set_language(language)
 
     def random_sentences_file(self, sentences_per_file, num_files):
+        if sentences_per_file <= 0:
+            raise ValueError("The number of sentences per file should be positive")
+        if num_files <= 0:
+            raise ValueError("The number of files should be positive")
         for _ in range(num_files):
             out_sentences = set()
             name = unique_filename()
