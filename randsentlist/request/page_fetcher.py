@@ -16,6 +16,8 @@ class PageFetcher:
         except wikipedia.DisambiguationError as e:
             s = random.choice(e.options)
             page = wikipedia.page(s)
+        except wikipedia.PageError:
+            page = wikipedia.page(wikipedia.random(1))
         return page
 
     def _fetch_page(self, cache):
