@@ -1,6 +1,9 @@
+import logging
 from multiprocessing.dummy import Pool as ThreadPool
 
 import wikipedia
+
+_logger = logging.getLogger(__name__)
 
 
 class PageFetcher:
@@ -9,16 +12,17 @@ class PageFetcher:
         title = ""
         while len(title) < 10:
             title = wikipedia.random(1)
-        try:
-            page = wikipedia.page(title)
-        except wikipedia.DisambiguationError:
-            page = self.random_wiki_page()
-        except wikipedia.PageError:
-            page = self.random_wiki_page()
-        return page
+        return wikipedia.page(title)
 
     def _random_wiki_page(self, task_id):
-        return self.random_wiki_page()
+        for attempt in range(1, 11):
+            try:
+                _logger.info(f"Thread {task_id} fetching a page ")
+                page = self.random_wiki_page()
+                _logger.info(f"Thread {task_id} has fetched its page.")
+                return page
+            except:
+                _logger.info(f"Thread {task_id}: failed for the {attempt} time.")
 
     def random_wiki_pages(self, num_pages):
         pool = ThreadPool(20)
@@ -26,6 +30,8 @@ class PageFetcher:
         return results
 
     def set_language(self, language):
+        _logger.info(f"Setting language to {language}")
         if language not in wikipedia.languages():
             raise ValueError(f"{language} is not a valid language code or it is not supported")
         wikipedia.set_lang(language)
+        _logger.info(f"Language has been set to {language}")
