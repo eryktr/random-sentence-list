@@ -1,4 +1,6 @@
 import logging
+import random
+import time
 from multiprocessing.dummy import Pool as ThreadPool
 
 import wikipedia
@@ -17,6 +19,7 @@ class PageFetcher:
     def _random_wiki_page(self, task_id):
         for attempt in range(1, 11):
             try:
+                time.sleep(random.random())
                 _logger.info(f"Thread {task_id} fetching a page ")
                 page = self.random_wiki_page()
                 _logger.info(f"Thread {task_id} has fetched its page.")
