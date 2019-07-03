@@ -1,4 +1,5 @@
 import logging
+import os
 import random
 
 from randsentlist.filename.filename import unique_filename
@@ -18,7 +19,7 @@ class ListGenerator:
     def set_language(self, language):
         self._fetcher.set_language(language)
 
-    def random_sentences_file(self, sentences_per_file, num_files):
+    def random_sentences_file(self, sentences_per_file, num_files, output_path=""):
         if sentences_per_file <= 0:
             raise ValueError("The number of sentences per file should be positive")
         if num_files <= 0:
@@ -26,6 +27,7 @@ class ListGenerator:
         for _ in range(num_files):
             out_sentences = set()
             name = unique_filename()
+            path = os.path.join(output_path, name)
             while len(out_sentences) < sentences_per_file:
                 pages = self._fetcher.random_wiki_pages(sentences_per_file - len(out_sentences))
                 _logger.info("Processing sentences...")
@@ -37,4 +39,4 @@ class ListGenerator:
                         break
                     out_sentences.add(sentence)
             _logger.info("Writing sentences to file...")
-            self._writer.write_iterable_to_latex_file(out_sentences, name)
+            self._writer.write_iterable_to_latex_file(out_sentences, path)
